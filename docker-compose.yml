@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+
+  nginx:
+    image: nginx:1.21
+    restart: unless-stopped
+    container_name: wp1_nginx
+    depends_on:
+      - nuxt
+    expose:
+      - 80
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./data/html:/var/www/html
+    environment:
+        VIRTUAL_HOST: test2.devcod.io
+        LETSENCRYPT_HOST: test2.devcod.io
+        LETSENCRYPT_EMAIL: info@rogerca.com
+
+  nuxt:
+    image: gerardojunior/nuxtjs:stable
+    restart: on-failure
+    volumes:
+      - type: bind
+        source: ./app
+        target: /src
+    ports:
+      - 3000:3000
