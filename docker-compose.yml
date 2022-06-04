@@ -5,7 +5,7 @@ services:
   nginx:
     image: nginx:1.21
     restart: unless-stopped
-    container_name: wp1_nginx
+    container_name: nuxt_nginx
     depends_on:
       - nuxt
     expose:
@@ -19,11 +19,15 @@ services:
         LETSENCRYPT_EMAIL: info@rogerca.com
 
   nuxt:
-    image: gerardojunior/nuxtjs:stable
-    restart: on-failure
-    volumes:
-      - type: bind
-        source: ./app
-        target: /src
-    ports:
-      - 3000:3000
+    container_name: nuxt_app
+    build: .
+    restart: always
+    command:
+      "npm run start"
+    expose:
+      - 3000
+
+networks:
+  default:
+    external: true
+    name: nginx-proxy
